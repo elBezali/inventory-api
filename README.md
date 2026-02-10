@@ -1,128 +1,225 @@
-# Inventory API (Spring Boot) - Assignment 33
+Inventory API (Spring Boot) - Assignment 33
 
-API sederhana untuk kebutuhan assignment deployment ke VPS menggunakan Docker + Docker Compose + GitHub Actions (CI/CD).
+Deskripsi:
+Project ini adalah REST API sederhana untuk kebutuhan Assignment 33, yang dideploy ke VPS menggunakan Docker, Docker Compose, dan GitHub Actions (CI/CD).
 
-## Tech Stack
+Tech Stack:
 - Java 17
 - Spring Boot
-- Spring Web, Spring Data JPA, Validation
-- Actuator (healthcheck)
+- Spring Web
+- Spring Data JPA
+- Validation
+- Spring Boot Actuator
 - H2 Database
-- Docker, Docker Compose
-- GitHub Actions (deploy otomatis ke VPS)
-- Postman / cURL untuk pengujian
+- Docker
+- Docker Compose
+- GitHub Actions
+- Postman / cURL
 
----
+=====================================================
+CARA CLONE DAN MENJALANKAN DI LOKAL
+=====================================================
 
-## Cara Clone & Menjalankan di Lokal
-
-### 1) Clone repository
-git clone <LINK_REPO_GITHUB_KAMU>
+1. Clone Repository
+git clone <LINK_REPOSITORY_GITHUB>
 cd inventory-api
 
-### 2) Jalankan aplikasi
+2. Jalankan Aplikasi
 mvn spring-boot:run
 
-Default local:
-- http://localhost:8080
+3. Akses Lokal
+http://localhost:8080
 
-Cek health:
-- http://localhost:8080/actuator/health
+Health Check:
+http://localhost:8080/actuator/health
 
----
+=====================================================
+ARSITEKTUR PROJECT
+=====================================================
 
-## Endpoint Utama
-Base URL (VPS): http://203.194.115.210:9004
+Controller Layer:
+- UserController
+- ItemController
 
-### Users (endpoint utama assignment)
-- GET /api/users
-- POST /api/users
+Service Layer:
+- UserService
+- ItemService
 
-Contoh body POST /api/users:
-{
-  "name": "Budi",
-  "email": "budi9004@mail.com"
-}
+Repository Layer:
+- UserRepository
+- ItemRepository
 
-### Items (tambahan)
-- GET /api/items
+=====================================================
+ENVIRONMENT CONFIG
+=====================================================
 
-### Healthcheck
-- GET /actuator/health
+Aplikasi membaca port dari environment variable:
 
----
+server.port=${APP_PORT:8080}
 
-## Step by Step Deployment ke VPS (Docker + GitHub Actions)
+Artinya:
+- Jika APP_PORT ada → gunakan port tersebut
+- Jika tidak → default 8080
 
-### 1) File yang disiapkan di repository
-Pastikan repository berisi:
+=====================================================
+STEP DEPLOYMENT KE VPS
+=====================================================
+
+1. Pastikan File Ada di Repository:
 - Dockerfile
 - docker-compose.yml
 - .github/workflows/deploy.yml
 - README.md
 
-Aplikasi membaca port dari environment:
-server.port=${APP_PORT:8080}
+2. Setup GitHub Secrets:
+Masuk ke:
+Repository → Settings → Secrets → Actions
 
-### 2) Setup GitHub Secrets
-Di GitHub: Settings -> Secrets and variables -> Actions -> New repository secret
+Tambahkan:
+VPS_HOST
+VPS_USER
+VPS_SSH_KEY
+DOCKERHUB_USERNAME
+DOCKERHUB_TOKEN
 
-Isi secrets berikut:
-- VPS_HOST
-- VPS_USER
-- VPS_SSH_KEY
-- DOCKERHUB_USERNAME
-- DOCKERHUB_TOKEN
+3. Setup VPS
 
-### 3) Setup VPS
-Login VPS:
+Login:
 ssh student@203.194.115.210
 
-Pastikan Docker tersedia:
+Pastikan Docker ada:
 docker --version
 docker compose version
 
-Siapkan folder deploy dan file .env:
+Buat folder deploy:
 mkdir -p /home/student/spring-app/student4
 cd /home/student/spring-app/student4
+
+Buat file .env:
 nano .env
 
-Isi .env (contoh):
+Isi:
 APP_PORT=9004
 DOCKERHUB_USERNAME=<USERNAME_DOCKERHUB>
 
-### 4) Deploy otomatis lewat GitHub Actions
-Deploy berjalan otomatis ketika ada push ke branch main.
+4. Deploy Otomatis
 
-Workflow melakukan:
-1. Build aplikasi (Maven)
-2. Build & push Docker image ke DockerHub
-3. Copy docker-compose.yml ke VPS
-4. docker compose pull
-5. docker compose down && docker compose up -d
+Deployment berjalan otomatis saat push ke branch main.
 
----
+Workflow akan:
+- Build Maven
+- Build Docker Image
+- Push ke DockerHub
+- Copy docker-compose ke VPS
+- Pull Image di VPS
+- Restart Container
 
-## Link API Publik (VPS)
-- GET Users: http://203.194.115.210:9004/api/users
-- POST Users: http://203.194.115.210:9004/api/users
-- GET Items: http://203.194.115.210:9004/api/items
-- Health: http://203.194.115.210:9004/actuator/health
+=====================================================
+LINK API PUBLIK (VPS)
+=====================================================
 
----
+Base URL:
+http://203.194.115.210:9004
 
-## Pengujian API (Postman / cURL)
+Health:
+GET /actuator/health
 
-### Postman
-Lakukan pengujian dan ambil screenshot:
-1) GET http://203.194.115.210:9004/api/users (status 200 OK)
-2) POST http://203.194.115.210:9004/api/users (status 200/201, response success)
+Users:
+GET /api/users
+POST /api/users
 
-### cURL
-GET /api/users:
+Items:
+GET /api/items
+POST /api/items
+GET /api/items/{id}
+PUT /api/items/{id}
+DELETE /api/items/{id}
+
+=====================================================
+CONTOH REQUEST API
+=====================================================
+
+POST USERS
+POST /api/users
+Body:
+{
+  "name": "Budi",
+  "email": "budi9004@mail.com"
+}
+
+POST ITEMS
+POST /api/items
+Body:
+{
+  "sku": "SKU-001",
+  "name": "Ikan Tuna",
+  "stock": 100
+}
+
+=====================================================
+PENGUJIAN API
+=====================================================
+
+POSTMAN TEST
+
+1. GET Users
+http://203.194.115.210:9004/api/users
+
+2. POST Users
+http://203.194.115.210:9004/api/users
+
+3. GET Items
+http://203.194.115.210:9004/api/items
+
+4. POST Items
+http://203.194.115.210:9004/api/items
+
+=====================================================
+cURL TEST
+=====================================================
+
+GET USERS
 curl http://203.194.115.210:9004/api/users
 
-POST /api/users:
+POST USERS
 curl -X POST http://203.194.115.210:9004/api/users \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Budi","email":"budi9004@mail.com"}'
+ -H "Content-Type: application/json" \
+ -d '{"name":"Budi","email":"budi9004@mail.com"}'
+
+POST ITEMS
+curl -X POST http://203.194.115.210:9004/api/items \
+ -H "Content-Type: application/json" \
+ -d '{"sku":"SKU-001","name":"Ikan Tuna","stock":100}'
+
+=====================================================
+OUTPUT YANG DIHARAPKAN
+=====================================================
+
+Response Success:
+{
+  "success": true,
+  "message": "...",
+  "data": {...}
+}
+
+=====================================================
+CATATAN
+=====================================================
+
+Jika POST Users gagal karena email sudah ada:
+Ganti email menjadi unik.
+
+Jika API tidak bisa diakses:
+Pastikan container running:
+docker ps
+
+Cek logs:
+docker logs spring-deploy-student4-app
+
+=====================================================
+AUTHOR
+=====================================================
+
+Bezaleel Firman L
+Assignment 33 Deployment API
+Spring Boot + Docker + GitHub Actions + VPS
