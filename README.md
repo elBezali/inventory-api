@@ -1,225 +1,270 @@
-Inventory API (Spring Boot) - Assignment 33
+# Inventory API (Spring Boot)
 
-Deskripsi:
-Project ini adalah REST API sederhana untuk kebutuhan Assignment 33, yang dideploy ke VPS menggunakan Docker, Docker Compose, dan GitHub Actions (CI/CD).
+## 📌 Deskripsi
 
-Tech Stack:
-- Java 17
-- Spring Boot
-- Spring Web
-- Spring Data JPA
-- Validation
-- Spring Boot Actuator
-- H2 Database
-- Docker
-- Docker Compose
-- GitHub Actions
-- Postman / cURL
+Project ini adalah REST API sederhana untuk kebutuhan Assignment 33,
+yang dideploy ke VPS menggunakan Docker, Docker Compose, dan GitHub
+Actions (CI/CD).
 
-=====================================================
-CARA CLONE DAN MENJALANKAN DI LOKAL
-=====================================================
+------------------------------------------------------------------------
 
-1. Clone Repository
+## 🧰 Tech Stack
+
+-   Java 17
+-   Spring Boot
+-   Spring Web
+-   Spring Data JPA
+-   Validation
+-   Spring Boot Actuator
+-   H2 Database
+-   Docker
+-   Docker Compose
+-   GitHub Actions
+-   Postman / cURL
+
+------------------------------------------------------------------------
+
+## 🚀 Cara Clone & Menjalankan di Lokal
+
+### 1️⃣ Clone Repository
+
+``` bash
 git clone <LINK_REPOSITORY_GITHUB>
 cd inventory-api
+```
 
-2. Jalankan Aplikasi
+### 2️⃣ Jalankan Aplikasi
+
+``` bash
 mvn spring-boot:run
+```
 
-3. Akses Lokal
+### 3️⃣ Akses Lokal
+
+``` bash
 http://localhost:8080
+```
 
-Health Check:
+❤️ Health Check
+
+``` bash
 http://localhost:8080/actuator/health
+```
 
-=====================================================
-ARSITEKTUR PROJECT
-=====================================================
+------------------------------------------------------------------------
 
-Controller Layer:
-- UserController
-- ItemController
+## 🏗 Arsitektur Project
 
-Service Layer:
-- UserService
-- ItemService
+### 🎮 Controller Layer
 
-Repository Layer:
-- UserRepository
-- ItemRepository
+-   UserController
+-   ItemController
 
-=====================================================
-ENVIRONMENT CONFIG
-=====================================================
+### 🧠 Service Layer
 
-Aplikasi membaca port dari environment variable:
+-   UserService
+-   ItemService
 
+### 🗄 Repository Layer
+
+-   UserRepository
+-   ItemRepository
+
+------------------------------------------------------------------------
+
+## ⚙️ Environment Config
+
+``` properties
 server.port=${APP_PORT:8080}
+```
 
-Artinya:
-- Jika APP_PORT ada → gunakan port tersebut
-- Jika tidak → default 8080
+📌 Artinya: - Jika APP_PORT tersedia → gunakan port tersebut\
+- Jika tidak → default port 8080
 
-=====================================================
-STEP DEPLOYMENT KE VPS
-=====================================================
+------------------------------------------------------------------------
 
-1. Pastikan File Ada di Repository:
-- Dockerfile
-- docker-compose.yml
-- .github/workflows/deploy.yml
-- README.md
+## 🐳 Step Deployment ke VPS
 
-2. Setup GitHub Secrets:
-Masuk ke:
+### 📁 File Wajib di Repository
+
+-   Dockerfile
+-   docker-compose.yml
+-   .github/workflows/deploy.yml
+-   README.md
+
+------------------------------------------------------------------------
+
+### 🔐 Setup GitHub Secrets
+
 Repository → Settings → Secrets → Actions
 
-Tambahkan:
-VPS_HOST
-VPS_USER
-VPS_SSH_KEY
-DOCKERHUB_USERNAME
+Tambahkan: - VPS_HOST - VPS_USER - VPS_SSH_KEY - DOCKERHUB_USERNAME -
 DOCKERHUB_TOKEN
 
-3. Setup VPS
+------------------------------------------------------------------------
+
+### 🖥 Setup VPS
 
 Login:
-ssh student@203.194.115.210
 
-Pastikan Docker ada:
+``` bash
+ssh student@203.194.115.210
+```
+
+Cek Docker:
+
+``` bash
 docker --version
 docker compose version
+```
 
-Buat folder deploy:
+Buat folder deployment:
+
+``` bash
 mkdir -p /home/student/spring-app/student4
 cd /home/student/spring-app/student4
+```
 
-Buat file .env:
-nano .env
+Buat file `.env`:
 
-Isi:
+``` env
 APP_PORT=9004
 DOCKERHUB_USERNAME=<USERNAME_DOCKERHUB>
+```
 
-4. Deploy Otomatis
+------------------------------------------------------------------------
 
-Deployment berjalan otomatis saat push ke branch main.
+### 🤖 Deploy Otomatis
 
-Workflow akan:
-- Build Maven
+Deployment berjalan saat push ke branch main.
+
+CI/CD akan: - Build Maven
 - Build Docker Image
 - Push ke DockerHub
 - Copy docker-compose ke VPS
-- Pull Image di VPS
-- Restart Container
+- Pull image terbaru
+- Restart container
 
-=====================================================
-LINK API PUBLIK (VPS)
-=====================================================
+------------------------------------------------------------------------
+
+## 🌐 Link API Publik
 
 Base URL:
-http://203.194.115.210:9004
 
-Health:
-GET /actuator/health
+    http://203.194.115.210:9004
 
-Users:
-GET /api/users
-POST /api/users
+### ❤️ Health
 
-Items:
-GET /api/items
-POST /api/items
-GET /api/items/{id}
-PUT /api/items/{id}
-DELETE /api/items/{id}
+    GET /actuator/health
 
-=====================================================
-CONTOH REQUEST API
-=====================================================
+### 👤 Users
 
-POST USERS
-POST /api/users
-Body:
+    GET /api/users
+    POST /api/users
+
+### 📦 Items
+
+    GET /api/items
+    POST /api/items
+    GET /api/items/{id}
+    PUT /api/items/{id}
+    DELETE /api/items/{id}
+
+------------------------------------------------------------------------
+
+## 📮 Contoh Request API
+
+### 👤 POST Users
+
+``` json
 {
   "name": "Budi",
   "email": "budi9004@mail.com"
 }
+```
 
-POST ITEMS
-POST /api/items
-Body:
+### 📦 POST Items
+
+``` json
 {
   "sku": "SKU-001",
   "name": "Ikan Tuna",
   "stock": 100
 }
+```
 
-=====================================================
-PENGUJIAN API
-=====================================================
+------------------------------------------------------------------------
 
-POSTMAN TEST
+## 🧪 Testing API
 
-1. GET Users
-http://203.194.115.210:9004/api/users
+### 📮 Postman Test
 
-2. POST Users
-http://203.194.115.210:9004/api/users
+-   GET /api/users
+-   POST /api/users
+-   GET /api/items
+-   POST /api/items
 
-3. GET Items
-http://203.194.115.210:9004/api/items
+------------------------------------------------------------------------
 
-4. POST Items
-http://203.194.115.210:9004/api/items
+### 🧪 cURL Test
 
-=====================================================
-cURL TEST
-=====================================================
+GET Users:
 
-GET USERS
+``` bash
 curl http://203.194.115.210:9004/api/users
+```
 
-POST USERS
+POST Users:
+
+``` bash
 curl -X POST http://203.194.115.210:9004/api/users \
  -H "Content-Type: application/json" \
  -d '{"name":"Budi","email":"budi9004@mail.com"}'
+```
 
-POST ITEMS
+POST Items:
+
+``` bash
 curl -X POST http://203.194.115.210:9004/api/items \
  -H "Content-Type: application/json" \
  -d '{"sku":"SKU-001","name":"Ikan Tuna","stock":100}'
+```
 
-=====================================================
-OUTPUT YANG DIHARAPKAN
-=====================================================
+------------------------------------------------------------------------
 
-Response Success:
+## ✅ Format Response
+
+``` json
 {
   "success": true,
   "message": "...",
   "data": {...}
 }
+```
 
-=====================================================
-CATATAN
-=====================================================
+------------------------------------------------------------------------
 
-Jika POST Users gagal karena email sudah ada:
-Ganti email menjadi unik.
+## 📝 Catatan
 
-Jika API tidak bisa diakses:
-Pastikan container running:
+-   Jika POST Users gagal → gunakan email berbeda\
+-   Jika API tidak bisa diakses → cek container
+
+Cek container:
+
+``` bash
 docker ps
+```
 
-Cek logs:
+Cek log:
+
+``` bash
 docker logs spring-deploy-student4-app
+```
 
-=====================================================
-AUTHOR
-=====================================================
+------------------------------------------------------------------------
 
-Bezaleel Firman L
-Assignment 33 Deployment API
+## 👨‍💻 Author
+
+Bezaleel Firman L\
+Assignment 33 --- Deployment REST API\
 Spring Boot + Docker + GitHub Actions + VPS
